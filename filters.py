@@ -16,6 +16,7 @@ iterator.
 
 You'll edit this file in Tasks 3a and 3c.
 """
+import itertools
 import operator
 
 
@@ -186,6 +187,11 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     need to work on this
+
+    Use itertools.islice(iterable, stop) to control number of
+    produced values from the iterator. The produce values are the
+    NEOS and Close approaches objects.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+
+    return iterator if n is None or n == 0 else itertools.islice(iterator, n)
