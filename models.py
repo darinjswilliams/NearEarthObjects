@@ -17,6 +17,8 @@ quirks of the data set, such as missing names and unknown diameters.
 
 You'll edit this file in Task 1.
 """
+import math
+
 from helpers import cd_to_datetime, datetime_to_str
 
 
@@ -45,9 +47,9 @@ class NearEarthObject:
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
         self.designation = info.get('designation', None)
-        self.name = info.get('name', None)
-        self.diameter = info.get('diameter', float('nan'))
-        self.hazardous = info.get('pha', False)
+        self.name = None if len(info['name']) == 0 else info.get('name')
+        self.diameter = float('nan') if len(info['diameter']) == 0 else  float(info['diameter'])
+        self.hazardous = True if info['hazardous'].upper() == 'Y' else False
 
 
         # Create an empty initial collection of linked approaches.
@@ -58,7 +60,7 @@ class NearEarthObject:
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
         return (f'{self.designation} {self.name} has a diameter of '
-                f'{self.diameter} km and [is/isn\'t] hazardous ')
+                f'{self.diameter} km and hazardous is {self.hazardous}')
 
     def __str__(self):
         """Return `str(self)`."""
@@ -132,5 +134,5 @@ class CloseApproach:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
+        return f"A Close Approach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r}, _designation={self._designation!r})"

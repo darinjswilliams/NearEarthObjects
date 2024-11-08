@@ -14,6 +14,7 @@ You'll edit this file in Task 2.
 """
 import csv
 import json
+import math
 
 from models import NearEarthObject, CloseApproach
 
@@ -33,8 +34,8 @@ def load_neos(neo_csv_path):
                 neo = NearEarthObject(
                     name=row['name'],
                     designation=row['pdes'],
-                    diameter=float(row['diameter']),
-                    hazardous=row['pha'] == 'Y'
+                    diameter = row['diameter'],
+                    hazardous=row['pha']
                 )
                 near_earth_objects.append(neo)
             except ValueError as ve:

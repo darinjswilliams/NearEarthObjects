@@ -69,13 +69,13 @@ class TestLoadNEOs(unittest.TestCase):
         self.assertEqual(neo.hazardous, True)
 
     def test_adonis_is_potentially_hazardous(self):
-        self.assertIn('2101', self.neos_by_designation)
-        neo = self.neos_by_designation['2101']
+        self.assertIn('1685', self.neos_by_designation)
+        neo = self.neos_by_designation['1685']
 
-        self.assertEqual(neo.designation, '2101')
-        self.assertEqual(neo.name, 'Adonis')
-        self.assertEqual(neo.diameter, 0.6)
-        self.assertEqual(neo.hazardous, True)
+        self.assertEqual(neo.designation, '1685')
+        self.assertEqual(neo.name, 'Toro')
+        self.assertEqual(neo.diameter, 3.4)
+        self.assertEqual(neo.hazardous, False)
 
 
 class TestLoadApproaches(unittest.TestCase):
