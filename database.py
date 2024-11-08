@@ -104,6 +104,7 @@ class NEODatabase:
         """ 
             Use all function to check the filter elements for each approach
             Yield is a generator function
+            Inline if provides cleaner code
     
          """
         for approach in self._approaches:
