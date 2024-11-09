@@ -62,36 +62,42 @@ def write_to_json(results, filename):
     with open(filename, 'w') as out_file:
         data = []
         for row in results:
-            serialized_coa_row = serialize_json_close_approach(row)
+            serialized_coa_row = serialize_close_approach(row, False)
             data.append(serialized_coa_row)
         json.dump(data, out_file, indent=4)
 
 
-def serialize_close_approach(row):
-    """Serialize a CloseApproach object to a dictionary for CSV writing."""
+def serialize_close_approach(row, is_csv=True):
+    """Serialize a CloseApproach object to a dictionary.
 
-    return {
+    :param row: A CloseApproach object.
+    :param is_csv: A flag indicating whether to serialize for CSV or JSON.
+    :return: A dictionary representing the serialized CloseApproach.
+    """
+    common_data = {
         "datetime_utc": row.time_str,
         "distance_au": row.distance,
         "velocity_km_s": row.velocity,
-        'designation': row.neo.designation,
-        'name': '' if row.neo.name is None else row.neo.name,
-        'diameter_km': row.neo.diameter,
-        'potentially_hazardous': row.neo.hazardous
     }
 
-
-def serialize_json_close_approach(row):
-    """Serialize a CloseApproach object to a dictionary for CSV writing."""
-
-    return {
-        "datetime_utc": row.time_str,
-        "distance_au": row.distance,
-        "velocity_km_s": row.velocity,
-        "neo": {
+    if is_csv:
+        common_data.update({
             'designation': row.neo.designation,
-            'name': '' if row.neo.name is None else row.neo.name,
+            'name': row.neo.name if row.neo.name is not None else '',
             'diameter_km': row.neo.diameter,
             'potentially_hazardous': row.neo.hazardous
-        }
+        })
+    else:
+        common_data['neo'] = serialize_neo(row.neo)
+
+    return common_data
+
+
+def serialize_neo(neo):
+    """Serialize a Near-Earth Object to a dictionary."""
+    return {
+        'designation': neo.designation,
+        'name': neo.name if neo.name is not None else '',
+        'diameter_km': neo.diameter,
+        'potentially_hazardous': neo.hazardous
     }
