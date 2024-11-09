@@ -74,6 +74,16 @@ class NearEarthObject:
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
 
+    def serialize(self):
+        neo_parse_dict = {
+            "designation": self.designation,
+            "name": '' if self.name is None else self.name,
+            "diameter_km": self.diameter,
+            "potentially_hazardous": self.hazardous
+        }
+
+        return neo_parse_dict
+
 
 class CloseApproach:
     """A close approach to Earth by an NEO.
@@ -136,3 +146,16 @@ class CloseApproach:
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"A Close Approach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r}, _designation={self._designation!r})"
+
+    def serialize(self):
+        clean_dict = {
+            "datetime_utc": datetime_to_str(self.time),
+            "distance_au": self.distance,
+            "velocity_km_s": self.velocity,
+            'designation': self.neo.designation,
+            'name': '' if self.neo.name is None else self.neo.name,
+            'diameter_km': self.neo.diameter,
+            'potentially_hazardous': self.neo.hazardous
+        }
+
+        return clean_dict
