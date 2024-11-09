@@ -115,6 +115,10 @@ class HazardFilter(AttributeFilter):
         return approach.neo.hazardous
 
 
+def add_filter(filters, FilterClass, op, values):
+        if values is not None:
+            filters.append(FilterClass(op, values))
+
 def create_filters(
         date=None, start_date=None, end_date=None,
         distance_min=None, distance_max=None,
@@ -164,35 +168,29 @@ def create_filters(
     """
     # TODO: Decide how you will represent your filters.
     filters = []
-    if date is not None:
-        filters.append(DateFilter(operator.eq, date))
 
-    if start_date is not None:
-        filters.append(DateFilter(operator.ge, start_date))
+    # Add all filters to a map for easy of maintainability
+    # map the key to operations FilterClass, operator query parameter
 
-    if end_date is not None:
-        filters.append(DateFilter(operator.le, end_date))
+    filter_map = {
+        'date': (DateFilter, operator.eq, date),
+        'start_date': (DateFilter, operator.ge, start_date),
+        'end_date': (DateFilter, operator.le, end_date),
+        'distance_min': (DistanceFilter, operator.ge, distance_min),
+        'distance_max': (DistanceFilter, operator.le, distance_max),
+        'velocity_min': (VelocityFilter, operator.ge, velocity_min),
+        'velocity_max': (VelocityFilter, operator.le, velocity_max),
+        'diameter_min': (DiameterFilter, operator.ge, diameter_min),
+        'diameter_max': (DiameterFilter, operator.le, diameter_max),
+        'hazardous': (HazardFilter, operator.eq, hazardous),
+    }
 
-    if distance_min is not None:
-        filters.append(DistanceFilter(operator.ge, distance_min))
+    # Iterate over the map and place into tuple FilterClass
+    # Operator and Query Parameter.  Populate the filter dictionary in
+    # the add_filter method
 
-    if distance_max is not None:
-        filters.append(DistanceFilter(operator.le, distance_max))
-
-    if velocity_min is not None:
-        filters.append(VelocityFilter(operator.ge, velocity_min))
-
-    if velocity_max is not None:
-        filters.append(VelocityFilter(operator.le, velocity_max))
-
-    if diameter_min is not None:
-        filters.append(DiameterFilter(operator.ge, diameter_min))
-
-    if diameter_max is not None:
-        filters.append(DiameterFilter(operator.le, diameter_max))
-
-    if hazardous is not None:
-        filters.append(HazardFilter(operator.eq, hazardous))
+    for key, (FilterClass, op, value) in filter_map.items():
+        add_filter(filters, FilterClass, op, value)
 
     return filters
 
