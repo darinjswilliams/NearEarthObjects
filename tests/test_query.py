@@ -35,6 +35,7 @@ class TestQuery(unittest.TestCase):
         cls.neos = load_neos(TEST_NEO_FILE)
         cls.approaches = load_approaches(TEST_CAD_FILE)
         cls.db = NEODatabase(cls.neos, cls.approaches)
+        cls.db.link_all_approaches()
 
     def test_query_all(self):
         expected = set(self.approaches)

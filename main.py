@@ -469,6 +469,8 @@ def main():
             args.neofile), load_approaches(
             args.cadfile))
 
+    database.link_all_approaches()
+
     # Run the chosen subcommand.
     if args.cmd == 'inspect':
         inspect(database, pdes=args.pdes, name=args.name, verbose=args.verbose)

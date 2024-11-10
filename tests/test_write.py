@@ -40,7 +40,8 @@ def build_results(n):
     approaches = tuple(load_approaches(TEST_CAD_FILE))
 
     # Only needed to link together these objects.
-    NEODatabase(neos, approaches)
+    database = NEODatabase(neos, approaches)
+    database.link_all_approaches()
 
     return approaches[:n]
 
