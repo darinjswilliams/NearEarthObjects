@@ -116,8 +116,9 @@ class HazardFilter(AttributeFilter):
 
 
 def add_filter(filters, FilterClass, op, values):
-        if values is not None:
-            filters.append(FilterClass(op, values))
+    if values is not None:
+        filters.append(FilterClass(op, values))
+
 
 def create_filters(
         date=None, start_date=None, end_date=None,
