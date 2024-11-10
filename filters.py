@@ -167,7 +167,6 @@ def create_filters(
                       potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    # TODO: Decide how you will represent your filters.
     filters = []
 
     # Add all filters to a map for easy of maintainability
@@ -210,6 +209,5 @@ def limit(iterator, n=None):
     produced values from the iterator. The produce values are the
     NEOS and Close approaches objects.
     """
-    # TODO: Produce at most `n` values from the given iterator.
 
     return iterator if n is None or n == 0 else itertools.islice(iterator, n)
