@@ -17,6 +17,7 @@ import functools
 
 def memoize(func):
     cache = {}
+
     @functools.wraps(func)
     def memoized_func(*args, **kwargs):
         key = (args, tuple(kwargs.items()))
@@ -25,6 +26,7 @@ def memoize(func):
         return cache[key]
 
     return memoized_func
+
 
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
@@ -61,87 +63,68 @@ class NEODatabase:
             neo.designation: neo for neo in self._neos}
         self.neo_lookup_name = {neo.name: neo for neo in self._neos}
 
-
-        # for approach in self._approaches:
-        #     neo = self.neo_lookup_designation.get(approach._designation)
-        #     approach.neo = neo
-        #     neo.approaches.append(approach)
-
     @memoize
     def get_neo_by_designation(self, designation):
-        return self.neo_lookup_designation.get(designation)
+        """Find and return an NEO by its primary designation.
 
+         If no match is found, return `None` instead.
+
+         Each NEO in the data set has a unique primary designation,
+         as a string.
+
+         The matching is exact - check for spelling and capitalization if no
+         match is found.
+
+         :param designation: The primary designation of the NEO to search for.
+         :return: The `NearEarthObject` with the desired primary designation,
+         or `None`.
+         """
+        return self.neo_lookup_designation.get(designation)
 
     @memoize
     def get_neo_by_name(self, name):
+        """Find and return an NEO by its name.
+
+       If no match is found, return `None` instead.
+
+       Not every NEO in the data set has a name. No NEOs are associated with
+       the empty string nor with the `None` singleton.
+
+       The matching is exact - check for spelling and capitalization if no
+       match is found.
+
+       :param name: The name, as a string, of the NEO to search for.
+       :return: The `NearEarthObject` with the desired name, or `None`.
+        """
         return self.neo_lookup_name.get(name)
 
-
     def query(self, filters=()):
+        """Query close approaches to generate those that match a
+         collection of filters.
+
+         This generates a stream of `CloseApproach` objects that match all
+         of the provided filters.
+
+         If no arguments are provided, generate all known close approaches.
+
+         The `CloseApproach` objects are generated in internal order,
+         which isn't guaranteed to be sorted meaningfully, although is
+         often sorted by time.
+
+         :param filters: A collection of filters capturing user-specified
+          criteria.
+         :return: A stream of matching `CloseApproach` objects.
+         """
         for approach in self._approaches:
             if all(filter(approach) for filter in filters):
                 yield approach
 
     def _link_approaches_to_neos(self, close_approaches):
-        neo_objects = self.get_neo_by_designation(close_approaches._designation)
+        neo_objects = self.get_neo_by_designation(
+            close_approaches._designation)
         close_approaches.neo = neo_objects
         neo_objects.approaches.append(close_approaches)
 
     def link_all_approaches(self):
         for coa_approach in self._approaches:
             self._link_approaches_to_neos(coa_approach)
-
-
-    # def get_neo_by_designation(self, designation):
-    #     """Find and return an NEO by its primary designation.
-    #
-    #     If no match is found, return `None` instead.
-    #
-    #     Each NEO in the data set has a unique primary designation, as a string.
-    #
-    #     The matching is exact - check for spelling and capitalization if no
-    #     match is found.
-    #
-    #     :param designation: The primary designation of the NEO to search for.
-    #     :return: The `NearEarthObject` with the desired primary designation,
-    #     or `None`.
-    #     """
-    #     return self.neo_lookup_designation.get(designation)
-
-    # def get_neo_by_name(self, name):
-    #     """Find and return an NEO by its name.
-    #
-    #     If no match is found, return `None` instead.
-    #
-    #     Not every NEO in the data set has a name. No NEOs are associated with
-    #     the empty string nor with the `None` singleton.
-    #
-    #     The matching is exact - check for spelling and capitalization if no
-    #     match is found.
-    #
-    #     :param name: The name, as a string, of the NEO to search for.
-    #     :return: The `NearEarthObject` with the desired name, or `None`.
-    #     """
-    #     return self.neo_lookup_name.get(name)
-
-    # def query(self, filters=()):
-    #     """Query close approaches to generate those that match a
-    #     collection of filters.
-    #
-    #     This generates a stream of `CloseApproach` objects that match all
-    #     of the provided filters.
-    #
-    #     If no arguments are provided, generate all known close approaches.
-    #
-    #     The `CloseApproach` objects are generated in internal order,
-    #     which isn't guaranteed to be sorted meaningfully, although is
-    #     often sorted by time.
-    #
-    #     :param filters: A collection of filters capturing user-specified
-    #      criteria.
-    #     :return: A stream of matching `CloseApproach` objects.
-    #     """
-    #
-    #     for approach in self._approaches:
-    #         if all(filter(approach) for filter in filters):
-    #             yield approach
