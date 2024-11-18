@@ -14,6 +14,8 @@ You'll edit this file in Tasks 2 and 3.
 """
 import functools
 
+from LoggerMixin import LoggerMixin
+
 
 def memoize(func):
     cache = {}
@@ -28,7 +30,7 @@ def memoize(func):
     return memoized_func
 
 
-class NEODatabase:
+class NEODatabase(LoggerMixin, object):
     """A database of near-Earth objects and their close approaches.
 
     A `NEODatabase` contains a collection of NEOs and a collection of close
@@ -118,6 +120,7 @@ class NEODatabase:
         for approach in self._approaches:
             if all(filter(approach) for filter in filters):
                 yield approach
+                self.logger.info("Logging filters {}".format(approach))
 
     def _link_approaches_to_neos(self, close_approaches):
         neo_objects = self.get_neo_by_designation(
